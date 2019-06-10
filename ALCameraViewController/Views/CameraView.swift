@@ -26,7 +26,7 @@ public class CameraView: UIView {
     public func startSession() {
         session = AVCaptureSession()
         session.sessionPreset = AVCaptureSession.Preset.photo
-
+        
         device = cameraWithPosition(position: currentPosition)
         if let device = device , device.hasFlash {
             do {
@@ -35,9 +35,9 @@ public class CameraView: UIView {
                 device.unlockForConfiguration()
             } catch _ {}
         }
-
+        
         let outputSettings = [AVVideoCodecKey: AVVideoCodecJPEG]
-
+        
         do {
             input = try AVCaptureDeviceInput(device: device)
         } catch let error as NSError {
@@ -45,16 +45,16 @@ public class CameraView: UIView {
             print("Error: \(error.localizedDescription)")
             return
         }
-
+        
         if session.canAddInput(input) {
             session.addInput(input)
         }
-
+        
         imageOutput = AVCaptureStillImageOutput()
         imageOutput.outputSettings = outputSettings
-
+        
         session.addOutput(imageOutput)
-
+        
         cameraQueue.sync {
             session.startRunning()
             DispatchQueue.main.async() { [weak self] in
@@ -101,7 +101,7 @@ public class CameraView: UIView {
             line.alpha = 0
         }
     }
-
+    
     public func configureZoom() {
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(gesture:)))
         addGestureRecognizer(pinchGesture)
@@ -119,9 +119,9 @@ public class CameraView: UIView {
         focusView.alpha = 0
         focusView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
         
-        bringSubview(toFront: focusView)
+        bringSubviewToFront(focusView)
         
-        UIView.animateKeyframes(withDuration: 1.5, delay: 0, options: UIViewKeyframeAnimationOptions(), animations: {
+        UIView.animateKeyframes(withDuration: 1.5, delay: 0, options: UIView.KeyframeAnimationOptions(), animations: {
             
             UIView.addKeyframe(withRelativeStartTime: 0, relativeDuration: 0.15, animations: { [weak self] in
                 self?.focusView.alpha = 1
@@ -134,21 +134,21 @@ public class CameraView: UIView {
             })
             
             
-            }, completion: { [weak self] finished in
-                if finished {
-                    self?.focusView.isHidden = true
-                }
+        }, completion: { [weak self] finished in
+            if finished {
+                self?.focusView.isHidden = true
+            }
         })
     }
-
+    
     @objc internal func pinch(gesture: UIPinchGestureRecognizer) {
         guard let device = device else { return }
-
+        
         // Return zoom value between the minimum and maximum zoom values
         func minMaxZoom(_ factor: CGFloat) -> CGFloat {
             return min(max(factor, 1.0), device.activeFormat.videoMaxZoomFactor)
         }
-
+        
         func update(scale factor: CGFloat) {
             do {
                 try device.lockForConfiguration()
@@ -158,11 +158,11 @@ public class CameraView: UIView {
                 print("\(error.localizedDescription)")
             }
         }
-
+        
         let velocity = gesture.velocity
         let velocityFactor: CGFloat = 8.0
         let desiredZoomFactor = device.videoZoomFactor + atan2(velocity, velocityFactor)
-
+        
         let newScaleFactor = minMaxZoom(desiredZoomFactor)
         switch gesture.state {
         case .began, .changed:
@@ -177,7 +177,7 @@ public class CameraView: UIView {
         preview = AVCaptureVideoPreviewLayer(session: session)
         preview.videoGravity = AVLayerVideoGravity.resizeAspectFill
         preview.frame = bounds
-
+        
         layer.addSublayer(preview)
     }
     
@@ -188,14 +188,14 @@ public class CameraView: UIView {
     
     public func capturePhoto(completion: @escaping CameraShotCompletion) {
         isUserInteractionEnabled = false
-
+        
         guard let output = imageOutput, let orientation = AVCaptureVideoOrientation(rawValue: UIDevice.current.orientation.rawValue) else {
             completion(nil)
             return
         }
-
+        
         let size = frame.size
-
+        
         cameraQueue.sync {
             takePhoto(output, videoOrientation: orientation, cameraPosition: device.position, cropSize: size) { image in
                 DispatchQueue.main.async() { [weak self] in
@@ -217,13 +217,13 @@ public class CameraView: UIView {
         }
         
         let focusPoint = preview.captureDevicePointConverted(fromLayerPoint: toPoint)
-
+        
         device.focusPointOfInterest = focusPoint
         device.focusMode = .continuousAutoFocus
-
+        
         device.exposurePointOfInterest = focusPoint
         device.exposureMode = .continuousAutoExposure
-
+        
         device.unlockForConfiguration()
         
         return true
@@ -246,7 +246,7 @@ public class CameraView: UIView {
             device.unlockForConfiguration()
         } catch _ { }
     }
-
+    
     public func swapCameraInput() {
         
         guard let session = session, let currentInput = input else {
@@ -273,26 +273,26 @@ public class CameraView: UIView {
         session.addInput(newInput)
         session.commitConfiguration()
     }
-  
+    
     public func rotatePreview() {
-      
+        
         guard preview != nil else {
             return
         }
         switch UIApplication.shared.statusBarOrientation {
-            case .portrait:
-              preview?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
-              break
-            case .portraitUpsideDown:
-              preview?.connection?.videoOrientation = AVCaptureVideoOrientation.portraitUpsideDown
-              break
-            case .landscapeRight:
-              preview?.connection?.videoOrientation = AVCaptureVideoOrientation.landscapeRight
-              break
-            case .landscapeLeft:
-              preview?.connection?.videoOrientation = AVCaptureVideoOrientation.landscapeLeft
-              break
-            default: break
+        case .portrait:
+            preview?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
+            break
+        case .portraitUpsideDown:
+            preview?.connection?.videoOrientation = AVCaptureVideoOrientation.portraitUpsideDown
+            break
+        case .landscapeRight:
+            preview?.connection?.videoOrientation = AVCaptureVideoOrientation.landscapeRight
+            break
+        case .landscapeLeft:
+            preview?.connection?.videoOrientation = AVCaptureVideoOrientation.landscapeLeft
+            break
+        default: break
         }
     }
     

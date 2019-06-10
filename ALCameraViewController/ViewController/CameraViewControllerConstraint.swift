@@ -44,7 +44,7 @@ extension CameraViewController {
     func configCameraButtonEdgeConstraint(_ statusBarOrientation: UIInterfaceOrientation) {
         view.autoRemoveConstraint(cameraButtonEdgeConstraint)
         
-        let attribute : NSLayoutAttribute = {
+        let attribute : NSLayoutConstraint.Attribute = {
             switch statusBarOrientation {
             case .portrait: return .bottomMargin
             case .landscapeRight: return .rightMargin
@@ -72,7 +72,7 @@ extension CameraViewController {
      */
     func configCameraButtonGravityConstraint(_ portrait: Bool) {
         view.autoRemoveConstraint(cameraButtonGravityConstraint)
-        let attribute : NSLayoutAttribute = portrait ? .centerX : .centerY
+        let attribute : NSLayoutConstraint.Attribute = portrait ? .centerX : .centerY
         cameraButtonGravityConstraint = NSLayoutConstraint(
             item: cameraButton,
             attribute: attribute,
@@ -94,14 +94,14 @@ extension CameraViewController {
     }
     
     /**
-     * Configure the edges constraints of container that 
+     * Configure the edges constraints of container that
      * handle the center position of SwapButton and
      * LibraryButton.
      */
     func configContainerEdgeConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
         
-        let attributeOne : NSLayoutAttribute
-        let attributeTwo : NSLayoutAttribute
+        let attributeOne : NSLayoutConstraint.Attribute
+        let attributeTwo : NSLayoutConstraint.Attribute
         
         switch statusBarOrientation {
         case .portrait:
@@ -141,7 +141,7 @@ extension CameraViewController {
             multiplier: 1.0,
             constant: 0)
         view.addConstraint(containerButtonsEdgeTwoConstraint!)
-
+        
     }
     
     /**
@@ -149,7 +149,7 @@ extension CameraViewController {
      * orientation of the device.
      */
     func configContainerGravityConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
-        let attributeCenter : NSLayoutAttribute = statusBarOrientation.isPortrait ? .centerY : .centerX
+        let attributeCenter : NSLayoutConstraint.Attribute = statusBarOrientation.isPortrait ? .centerY : .centerX
         containerButtonsGravityConstraint = NSLayoutConstraint(
             item: containerSwapLibraryButton,
             attribute: attributeCenter,
@@ -179,9 +179,9 @@ extension CameraViewController {
      */
     func configSwapButtonEdgeConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
         
-        let attributeOne : NSLayoutAttribute
-        let attributeTwo : NSLayoutAttribute
-
+        let attributeOne : NSLayoutConstraint.Attribute
+        let attributeTwo : NSLayoutConstraint.Attribute
+        
         switch statusBarOrientation {
         case .portrait:
             attributeOne = .top
@@ -249,14 +249,14 @@ extension CameraViewController {
      */
     func configCloseButtonEdgeConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
         
-        let attribute : NSLayoutAttribute = {
+        let attribute : NSLayoutConstraint.Attribute = {
             switch statusBarOrientation {
             case .portrait: return .left
             case .landscapeRight, .landscapeLeft: return .centerX
             default: return .right
             }
         }()
-
+        
         closeButtonEdgeConstraint = NSLayoutConstraint(
             item: closeButton,
             attribute: attribute,
@@ -278,7 +278,7 @@ extension CameraViewController {
      */
     func configCloseButtonGravityConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
         
-        let attribute : NSLayoutAttribute
+        let attribute : NSLayoutConstraint.Attribute
         let constant : CGFloat
         
         switch statusBarOrientation {
@@ -330,9 +330,9 @@ extension CameraViewController {
      * top side of LibraryButton.
      */
     func configLibraryEdgeButtonConstraint(_ statusBarOrientation : UIInterfaceOrientation) {
-
-        let attributeOne : NSLayoutAttribute
-        let attributeTwo : NSLayoutAttribute
+        
+        let attributeOne : NSLayoutConstraint.Attribute
+        let attributeTwo : NSLayoutConstraint.Attribute
         
         switch statusBarOrientation {
         case .portrait:
@@ -401,7 +401,7 @@ extension CameraViewController {
         view.autoRemoveConstraint(flashButtonEdgeConstraint)
         
         let constraintRight = statusBarOrientation == .portrait || statusBarOrientation == .landscapeRight
-        let attribute : NSLayoutAttribute = constraintRight ? .topMargin : .bottomMargin
+        let attribute : NSLayoutConstraint.Attribute = constraintRight ? .topMargin : .bottomMargin
         
         flashButtonEdgeConstraint = NSLayoutConstraint(
             item: flashButton,
@@ -425,7 +425,7 @@ extension CameraViewController {
         view.autoRemoveConstraint(flashButtonGravityConstraint)
         
         let constraintRight = statusBarOrientation == .portrait || statusBarOrientation == .landscapeLeft
-        let attribute : NSLayoutAttribute = constraintRight ? .right : .left
+        let attribute : NSLayoutConstraint.Attribute = constraintRight ? .right : .left
         
         flashButtonGravityConstraint = NSLayoutConstraint(
             item: flashButton,
@@ -466,7 +466,7 @@ extension CameraViewController {
      */
     func configCameraOverlayCenterConstraint(_ portrait: Bool) {
         view.autoRemoveConstraint(cameraOverlayCenterConstraint)
-        let attribute : NSLayoutAttribute = portrait ? .centerY : .centerX
+        let attribute : NSLayoutConstraint.Attribute = portrait ? .centerY : .centerX
         cameraOverlayCenterConstraint = NSLayoutConstraint(
             item: cameraOverlay,
             attribute: attribute,
@@ -494,7 +494,7 @@ extension CameraViewController {
      the view will be pinned.
      */
     func configCameraOverlayEdgeOneContraint(_ portrait: Bool, padding: CGFloat) {
-        let attribute : NSLayoutAttribute = portrait ? .left : .bottom
+        let attribute : NSLayoutConstraint.Attribute = portrait ? .left : .bottom
         cameraOverlayEdgeOneConstraint = NSLayoutConstraint(
             item: cameraOverlay,
             attribute: attribute,
@@ -513,7 +513,7 @@ extension CameraViewController {
      the view will be pinned.
      */
     func configCameraOverlayEdgeTwoConstraint(_ portrait: Bool, padding: CGFloat) {
-        let attributeTwo : NSLayoutAttribute = portrait ? .right : .top
+        let attributeTwo : NSLayoutConstraint.Attribute = portrait ? .right : .top
         cameraOverlayEdgeTwoConstraint = NSLayoutConstraint(
             item: cameraOverlay,
             attribute: attributeTwo,
